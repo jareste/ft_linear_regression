@@ -3,8 +3,8 @@ import sys
 import os.path
 import matplotlib.pyplot as plt
 import seaborn as sns
-import pandas as pd
-import numpy as np
+import math
+import statistics
 
 class FtLinearRegression:
     def __init__(self, learning_rate=0.01, iterations=10000):
@@ -18,17 +18,23 @@ class FtLinearRegression:
 
     def fit(self, x, y):
         m = len(x)
-        x_norm = (x - np.mean(x)) / (np.max(x) - np.min(x))  
-        y_norm = (y - np.mean(y)) / (np.max(y) - np.min(y))  
+        mean_x = statistics.mean(x)
+        mean_y = statistics.mean(y)
+        max_x = max(x)
+        min_x = min(x)
+        max_y = max(y)
+        min_y = min(y)
+        x_norm = [(xi - mean_x) / (max_x - min_x) for xi in x]
+        y_norm = [(yi - mean_y) / (max_y - min_y) for yi in y]
         for i in range(self.iterations):
-            h = self.theta0 + self.theta1 * x_norm
-            loss = h - y_norm
-            gradient_theta0 = np.sum(loss) / m
-            gradient_theta1 = np.dot(x_norm, loss) / m
+            h = [self.theta0 + self.theta1 * xi for xi in x_norm]
+            loss = [hi - yi for hi, yi in zip(h, y_norm)]
+            gradient_theta0 = sum(loss) / m
+            gradient_theta1 = sum(xi * li for xi, li in zip(x_norm, loss)) / m
             self.theta1 -= self.learning_rate * gradient_theta1
             self.theta0 -= self.learning_rate * gradient_theta0
-        self.theta0 = self.theta0 * (np.max(y) - np.min(y)) + np.mean(y) - self.theta1 * np.mean(x) * (np.max(y) - np.min(y)) / (np.max(x) - np.min(x))
-        self.theta1 = self.theta1 * (np.max(y) - np.min(y)) / (np.max(x) - np.min(x))
+        self.theta0 = self.theta0 * (max_y - min_y) + mean_y - self.theta1 * mean_x * (max_y - min_y) / (max_x - min_x)
+        self.theta1 = self.theta1 * (max_y - min_y) / (max_x - min_x)
 
     def predict(self, x):
         return [self.estimate_price(xi) for xi in x]
@@ -54,8 +60,6 @@ def read_csv(filename):
                 data[header].append(value)
     return data
 
-
-
 def main():
     sns.set(style='darkgrid')
     try:
@@ -77,8 +81,8 @@ def main():
     model.fit(x, y)
     data['predicted'] = model.predict(data['km'])
 
-    sns.scatterplot(x='km', y='price', data=pd.DataFrame(data))
-    sns.lineplot(x='km', y='predicted', color='orange', lw=4, data=pd.DataFrame(data))
+    plt.scatter(x, y)
+    plt.plot(x, data['predicted'], color='orange', linewidth=4)
 
     model.print()
     model.save('model.csv')
