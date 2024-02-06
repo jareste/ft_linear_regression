@@ -42,23 +42,48 @@ class FtLinearRegression:
             writer = csv.writer(file)
             writer.writerow([self.theta0, self.theta1])
 
-sns.set(style='darkgrid')
+# import csv
 
-data = pd.read_csv('data.csv')
-data['km'] = pd.to_numeric(data['km'], errors='coerce')
-data['price'] = pd.to_numeric(data['price'], errors='coerce')
+def read_csv(filename):
+    with open(filename, 'r') as file:
+        reader = csv.reader(file)
+        headers = next(reader)
+        data = {header: [] for header in headers}
+        for row in reader:
+            for header, value in zip(headers, row):
+                data[header].append(value)
+    return data
 
-x = data['km'].values
-y = data['price'].values
 
-model = FtLinearRegression()
-model.fit(x, y)
-data['predicted'] = model.predict(data['km'])
 
-sns.scatterplot(x='km', y='price', data=data)
-sns.lineplot(x='km', y='predicted', color='orange', lw=4, data=data)
+def main():
+    sns.set(style='darkgrid')
+    try:
+        data = read_csv('data.csv')
+        print (data)
+        if data == {}:
+            raise Exception
+    except:
+        print('error: data.csv not found or invalid format')
+        sys.exit(1)
 
-model.print()
-model.save('model.csv')
+    data['km'] = [float(i) for i in data['km']]
+    data['price'] = [float(i) for i in data['price']]
 
-plt.show()
+    x = data['km']
+    y = data['price']
+
+    model = FtLinearRegression()
+    model.fit(x, y)
+    data['predicted'] = model.predict(data['km'])
+
+    sns.scatterplot(x='km', y='price', data=pd.DataFrame(data))
+    sns.lineplot(x='km', y='predicted', color='orange', lw=4, data=pd.DataFrame(data))
+
+    model.print()
+    model.save('model.csv')
+
+    plt.show()
+
+if __name__ == '__main__':
+    main()
