@@ -18,8 +18,8 @@ class FtLinearRegression:
 
     def fit(self, x, y):
         m = len(x)
-        x_norm = (x - np.mean(x)) / (np.max(x) - np.min(x))  # normalize x values
-        y_norm = (y - np.mean(y)) / (np.max(y) - np.min(y))  # normalize y values
+        x_norm = (x - np.mean(x)) / (np.max(x) - np.min(x))  
+        y_norm = (y - np.mean(y)) / (np.max(y) - np.min(y))  
         for i in range(self.iterations):
             h = self.theta0 + self.theta1 * x_norm
             loss = h - y_norm
@@ -27,8 +27,6 @@ class FtLinearRegression:
             gradient_theta1 = np.dot(x_norm, loss) / m
             self.theta1 -= self.learning_rate * gradient_theta1
             self.theta0 -= self.learning_rate * gradient_theta0
-            # if i % 100 == 0:
-            #     print(f'Iteration {i}/{self.iterations} - theta0: {self.theta0}, theta1: {self.theta1}')
         self.theta0 = self.theta0 * (np.max(y) - np.min(y)) + np.mean(y) - self.theta1 * np.mean(x) * (np.max(y) - np.min(y)) / (np.max(x) - np.min(x))
         self.theta1 = self.theta1 * (np.max(y) - np.min(y)) / (np.max(x) - np.min(x))
 
