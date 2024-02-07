@@ -49,6 +49,12 @@ class FtLinearRegression:
             writer.writerow([self.theta0, self.theta1])
         print('theta0 and theta1 saved to', filename)
 
+    def rmse(self, y_true, y_pred): # Root Mean Squared Error
+        return math.sqrt(sum((yt - yp) ** 2 for yt, yp in zip(y_true, y_pred)) / len(y_true))
+
+    def mae(self, y_true, y_pred): # Mean Absolute Error
+        return sum(abs(yt - yp) for yt, yp in zip(y_true, y_pred)) / len(y_true)
+
 def read_csv(filename):
     with open(filename, 'r') as file:
         reader = csv.reader(file)
@@ -87,6 +93,11 @@ def main():
 
     model.print()
     model.save('model.csv')
+
+    rmse = model.rmse(y, data['predicted'])
+    mae = model.mae(y, data['predicted'])
+    print('Root mean square error:', rmse, "euros.")
+    print('Mean absolute error:', mae, "euros.")
 
     plt.show()
 
