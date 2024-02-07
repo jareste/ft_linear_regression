@@ -20,7 +20,7 @@ def main():
     theta0, theta1 = get_parameters('model.csv')
     mileage = float(input("Enter a mileage: "))
     price = estimate_price(mileage, theta0, theta1)
-    print(f"The estimated price for a car with {mileage} mileage is {price}")
+    print(f"The estimated price for a car with {mileage} mileage is {price} euros.")
 
 if __name__ == "__main__":
     main()

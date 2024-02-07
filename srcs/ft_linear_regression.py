@@ -81,6 +81,9 @@ def main():
     model.fit(x, y)
     data['predicted'] = model.predict(data['km'])
 
+    plt.title('Price vs Mileage')
+    plt.xlabel('Mileage (km)')
+    plt.ylabel('Price (€)')
     plt.scatter(x, y)
     plt.plot(x, data['predicted'], color='orange', linewidth=4)
 
