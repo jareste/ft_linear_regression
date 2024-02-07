@@ -47,8 +47,7 @@ class FtLinearRegression:
         with open(filename, 'w') as file:
             writer = csv.writer(file)
             writer.writerow([self.theta0, self.theta1])
-
-# import csv
+        print('theta0 and theta1 saved to', filename)
 
 def read_csv(filename):
     with open(filename, 'r') as file:
@@ -64,7 +63,6 @@ def main():
     sns.set(style='darkgrid')
     try:
         data = read_csv('data.csv')
-        print (data)
         if data == {}:
             raise Exception
     except:
@@ -91,6 +89,9 @@ def main():
     model.save('model.csv')
 
     plt.show()
+
+    if plt:
+        plt.close()
 
 if __name__ == '__main__':
     main()
