@@ -18,7 +18,16 @@ def estimate_price(mileage, theta0, theta1):
 
 def main():
     theta0, theta1 = get_parameters('model.csv')
-    mileage = float(input("Enter a mileage: "))
+    while True:
+        try:
+            mileage = float(input("Enter a mileage: "))
+        except:
+            print("Invalid mileage. please introduce a valid one.")
+            continue
+        if mileage < 0:
+            print("The mileage must be a positive number.")
+            continue
+        break
     price = estimate_price(mileage, theta0, theta1)
     print(f"The estimated price for a car with {mileage} mileage is {price} euros.")
 

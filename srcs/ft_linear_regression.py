@@ -75,14 +75,21 @@ def main():
         print('error: data.csv not found or invalid format')
         sys.exit(1)
 
-    data['km'] = [float(i) for i in data['km']]
-    data['price'] = [float(i) for i in data['price']]
-
+    try:
+        data['km'] = [float(i) for i in data['km']]
+        data['price'] = [float(i) for i in data['price']]
+    except:
+        print('error: invalid data format')
+        sys.exit(1)
     x = data['km']
     y = data['price']
 
     model = FtLinearRegression()
-    model.fit(x, y)
+    try:
+        model.fit(x, y)
+    except:
+        print('Error: failed to fit the model.')
+        sys.exit(1)
     data['predicted'] = model.predict(data['km'])
 
     plt.title('Price vs Mileage')
