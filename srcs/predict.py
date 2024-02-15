@@ -11,6 +11,9 @@ def get_parameters(file_name):
     except FileNotFoundError:
         print("The file does not exist. Using default values for theta0 and theta1.")
         theta0, theta1 = 0.0, 0.0
+    except:
+        print("An error occurred while reading the file. Using default values for theta0 and theta1.")
+        theta0, theta1 = 0.0, 0.0
     return float(theta0), float(theta1)
 
 def estimate_price(mileage, theta0, theta1):
@@ -29,6 +32,8 @@ def main():
             continue
         break
     price = estimate_price(mileage, theta0, theta1)
+    if price < 0:
+        price = 0
     print(f"The estimated price for a car with {mileage} mileage is {price} euros.")
 
 if __name__ == "__main__":

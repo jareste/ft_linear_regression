@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import math
 import statistics
+import argparse
 
 class FtLinearRegression:
     def __init__(self, learning_rate=0.01, iterations=10000):
@@ -66,7 +67,16 @@ def read_csv(filename):
     return data
 
 def main():
-    sns.set(style='darkgrid')
+    parse = argparse.ArgumentParser(
+                    prog='python3 ft_linear_regression.py',
+                    description='This was my first linear regression program. It reads a csv file with two columns: \
+                    km and price. It then fits a linear model to the data and prints the model parameters. \
+                    Optionally, it can print the error metrics and plot the data. \
+                    The model parameters are saved to model.csv. The program requires the seaborn and matplotlib libraries.',
+                    epilog='Follow me on github: https://github.com/jareste.')
+    parse.add_argument('-e', '--error', action='store_true', help='Print the error metrics')
+    parse.add_argument('-p', '--plot', action='store_true', help='Plot the data')
+    args = parse.parse_args()
     try:
         data = read_csv('data.csv')
         if data == {}:
@@ -92,21 +102,28 @@ def main():
         sys.exit(1)
     data['predicted'] = model.predict(data['km'])
 
-    plt.title('Price vs Mileage')
-    plt.xlabel('Mileage (km)')
-    plt.ylabel('Price (€)')
-    plt.scatter(x, y)
-    plt.plot(x, data['predicted'], color='orange', linewidth=4)
 
     model.print()
-    model.save('model.csv')
+    try:
+        model.save('model.csv')
+    except:
+        print('Error: failed to save the model.')
+        sys.exit(1)
 
-    rmse = model.rmse(y, data['predicted'])
-    mae = model.mae(y, data['predicted'])
-    print('Root mean square error:', rmse, "euros.")
-    print('Mean absolute error:', mae, "euros.")
+    if args.error:
+        rmse = model.rmse(y, data['predicted'])
+        mae = model.mae(y, data['predicted'])
+        print('Root mean square error:', rmse, "euros.")
+        print('Mean absolute error:', mae, "euros.")
 
-    plt.show()
+    if args.plot:
+        sns.set(style='darkgrid')
+        plt.title('Price vs Mileage')
+        plt.xlabel('Mileage (km)')
+        plt.ylabel('Price (€)')
+        plt.scatter(x, y)
+        plt.plot(x, data['predicted'], color='orange', linewidth=4)
+        plt.show()
 
     if plt:
         plt.close()
